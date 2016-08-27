@@ -1,2 +1,6 @@
-node_modules
-.idea
+.idea/
+app.js
+bs-config.json
+index.html
+node_modules/
+package.json
