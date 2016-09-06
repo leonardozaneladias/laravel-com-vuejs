@@ -29,23 +29,33 @@ window.billReceiveListComponent = Vue.extend({
                 {{ o.done | doneLabelReceive }}
             </td>
             <td>
-                <a v-link="{name: 'bill-receive.update', params: {index: index}}">editar</a> |
+                <a v-link="{name: 'bill-receive.update', params: {id: o.id}}">editar</a> |
                 <a href="#" @click.prevent="deleteBill(o)">excluir</a>
             </td>
         </tr>
         </tbody>
     </table>
     `,
+    created: function(){
+        var self = this;
+        BillReceive.query().then(function (response) {
+            self.bills = response.data;
+        });
+    },
     data: function () {
         return {
-            bills: this.$root.$children[0].billsReceive
+            bills: []
         };
     },
     methods: {
         deleteBill: function (bill) {
             var ok = confirm("Você confirma a exclusão da conta "+bill.name+" de "+bill.date_due);
             if(ok == true){
-                this.$root.$children[0].billsReceive.$remove(bill);
+                var self = this;
+                BillReceive.delete({id: bill.id}).then(function () {
+                    self.bills.$remove(bill);
+                    self.$dispatch('change-info');
+                });
             }
         }
     },

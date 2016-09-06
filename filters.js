@@ -30,6 +30,19 @@ Vue.filter('resumeContas', function (value) {
 });
 
 
+Vue.filter('resumeContasReceber', function (value) {
+    if(value === false){
+        return "Nenhuma conta cadastrada";
+    }
+
+    if(!value){
+        return "Nenhuma conta a receber";
+    }else{
+        return "Existem "+ value +" a receber";
+    }
+});
+
+
 Vue.filter('totalDashboard', function (value) {
 
     if(!value){

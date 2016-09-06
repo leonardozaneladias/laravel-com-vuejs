@@ -32,32 +32,27 @@ window.DashboardComponent = Vue.extend({
     `,
     data: function () {
         return {
-            title: "Dashboard"
+            title: "Dashboard",
+            totalPagar: 0,
+            totalReceber: 0,
+            total: 0
         }
     },
     computed: {
         totalBalance: function () {
+            var self = this;
 
-            var billsPay = this.$root.$children[0].billsPay;
-            var billsReceive = this.$root.$children[0].billsReceive;
+            Bill.total().then(function (response) {
+                self.totalPagar = response.data.total;
+            });
 
-            var subTotalPay = 0;
-            for (var oP in billsPay) {
-                if (billsPay[oP].done) {
-                    subTotalPay += billsPay[oP].value;
-                }
-            }
+            BillReceive.total().then(function (response) {
+                self.totalReceber = response.data.total;
+            });
 
+            this.total = (this.totalReceber - this.totalPagar);
 
-
-            var subTotalReceive = 0;
-            for (var oR in billsReceive) {
-                if (billsReceive[oR].done) {
-                    subTotalReceive += billsReceive[oR].value;
-                }
-            }
-            var total = subTotalReceive - subTotalPay;
-            return total;
+            return this.total;
 
         }
     },

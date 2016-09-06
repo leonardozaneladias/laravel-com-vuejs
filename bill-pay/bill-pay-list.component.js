@@ -29,23 +29,33 @@ window.billPayListComponent = Vue.extend({
                 {{ o.done | doneLabel }}
             </td>
             <td>
-                <a v-link="{name: 'bill-pay.update', params: {index: index}}">editar</a> |
+                <a v-link="{name: 'bill-pay.update', params: {id: o.id}}">editar</a> |
                 <a href="#" @click.prevent="deleteBill(o)">excluir</a>
             </td>
         </tr>
         </tbody>
     </table>
     `,
+    created: function(){
+            var self = this;
+            Bill.query().then(function (response) {
+                self.bills = response.data;
+            });
+    },
     data: function () {
         return {
-            bills: this.$root.$children[0].billsPay
+            bills: []
         };
     },
     methods: {
         deleteBill: function (bill) {
             var ok = confirm("Você confirma a exclusão da conta "+bill.name+" de "+bill.date_due);
             if(ok == true){
-                this.$root.$children[0].billsPay.$remove(bill);
+                var self = this;
+                Bill.delete({id: bill.id}).then(function () {
+                    self.bills.$remove(bill);
+                    self.$dispatch('change-info');
+                });
             }
         }
     },
